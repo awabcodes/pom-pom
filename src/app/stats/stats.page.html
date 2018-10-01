@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Stats
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="arrow-dropup-circle"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button color="primary" (click)="showPieChart()"><ion-icon name="pie"></ion-icon></ion-fab-button>
+      <ion-fab-button color="primary" (click)="showBarChart()"><ion-icon name="stats"></ion-icon></ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <h1 text-center *ngIf="tasksService.finishedTasks.length === 0">No Completed Tasks</h1>
+
+  <canvas #canvas></canvas>
+
+</ion-content>

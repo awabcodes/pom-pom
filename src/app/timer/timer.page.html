@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Pomodoro</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="showInfo()">
+        <ion-icon name="information-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="taskFinished()">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <div class="flexcon">
+  <ion-grid>
+
+  <ion-row>
+      <ion-col text-center>
+        <ion-item color="primary" *ngIf="!tasksService.isTaskSelected" href="/tabs/(tasks:tasks)" routerDirection="forward">
+          <h5>Select a Task</h5>
+        </ion-item>
+        <ion-item color="primary" *ngIf="tasksService.isTaskSelected" href="/tabs/(tasks:tasks)" routerDirection="forward">
+          <h5>{{tasksService.currentTask.name}}</h5>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+        <ion-col>
+          <ion-card text-center color="primary"><p class="time">{{timerService.displayTime}}</p> <p *ngIf="tasksService.isTaskSelected">Completed Pomodoros {{tasksService.currentTask.totalPomodoros}}</p></ion-card>
+        </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col text-center>
+        <ion-button size="large" shape="round" *ngIf="!timerService.hasStarted && timerService.isPom" (click)="startTimer()">
+            Pomodoro
+            <ion-icon slot="end" name="play"></ion-icon>
+        </ion-button>
+
+        <ion-button size="large" shape="round" *ngIf="timerService.hasStarted && !timerService.hasFinished && timerService.isPom" (click)="timerService.initTimer()">
+            Pomodoro
+            <ion-icon slot="end" name="square"></ion-icon>
+        </ion-button>
+
+        <ion-button size="large" shape="round" *ngIf="!timerService.isPom" (click)="startTimer()">
+          Break
+        <ion-icon slot="end" name="play"></ion-icon>
+      </ion-button>
+      </ion-col>
+    </ion-row>
+    
+  </ion-grid>
+</div>
+</ion-content>
