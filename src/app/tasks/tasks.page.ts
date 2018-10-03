@@ -13,6 +13,9 @@ export class TasksPage implements OnInit {
   @ViewChild('slidingList') slidingList: List;
   isCompleted = false;
   taskName: string;
+  isAdd = false;
+  isEdit = false;
+  isDelete = false;
 
   constructor(public alertController: AlertController, public tasksService: TasksService) {}
 
@@ -56,17 +59,17 @@ export class TasksPage implements OnInit {
         {
           text: 'Ok',
           handler: (data) => {
-            if (data.taskName !== '') {
-              const task = new TaskModel(data.taskName);
-              this.tasksService.addTask(task);
-            }
+            this.taskName = data.taskName;
+            this.isAdd = true;
           }
         }
       ]
     });
 
-    alert.onWillDismiss().then(() => {
-      this.tasksService.load();
+    alert.onDidDismiss().then(() => {
+      if (this.taskName !== '' && this.isAdd) {
+        this.createTask();
+      }
     });
 
     await alert.present();
@@ -95,22 +98,19 @@ export class TasksPage implements OnInit {
           text: 'Save',
           handler: (data) => {
             this.taskName = data.taskName;
-            this.editTaskName(task);
+            this.isEdit = true;
           }
         }
       ]
     });
 
-    alert.onWillDismiss().then(() => {
-      this.tasksService.load();
+    alert.onDidDismiss().then(() => {
+      if (this.taskName !== '' && this.isEdit) {
+        this.editTaskName(task);
+      }
     });
 
     await alert.present();
-  }
-
-  async editTaskName(task: TaskModel) {
-    this.tasksService.editTask(task, this.taskName);
-    await this.slidingList.closeSlidingItems();
   }
 
   async deleteTaskConfirm(task: TaskModel) {
@@ -129,21 +129,38 @@ export class TasksPage implements OnInit {
           text: 'Yes',
           handler: () => {
             console.log('Confirm Okay');
-            this.deleteTask(task);
+            this.isDelete = true;
           }
         }
       ]
     });
 
-    alert.onWillDismiss().then(() => {
-      this.tasksService.load();
+    alert.onDidDismiss().then(() => {
+      if (this.isDelete) {
+        this.deleteTask(task);
+      }
     });
 
     await alert.present();
   }
 
+  createTask() {
+    const task = new TaskModel(this.taskName);
+    this.tasksService.addTask(task);
+    this.taskName = '';
+    this.isAdd = false;
+  }
+
+  async editTaskName(task: TaskModel) {
+    this.tasksService.editTask(task, this.taskName);
+    this.isEdit = false;
+    this.taskName = '';
+    await this.slidingList.closeSlidingItems();
+  }
+
   async deleteTask(task: TaskModel) {
     this.tasksService.removeTask(task);
+    this.isDelete = false;
     await this.slidingList.closeSlidingItems();
   }
 
